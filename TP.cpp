@@ -4,16 +4,13 @@ TP::TP(unsigned int M, unsigned int N, int* c, int* a, int* b): M(M), N(N), feas
 {
 	this->C = new int* [this->M];
 	this->X = new int* [this->M];
-    for (int i = 0; i < this->M; i++)
-	{
+    for (int i = 0; i < this->M; i++) {
 		this->C[i] = new int[this->N];
 		this->X[i] = new int[this->N];
 	}
 
-    for (int i = 0; i < M; i++)
-	{
-        for (int j = 0; j < N; j++)
-		{
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
 			this->C[i][j] = c[i * N + j];
 			this->X[i][j] = 0;
 		}
@@ -38,13 +35,11 @@ TP::TP(unsigned int M, unsigned int N, int* c, int* a, int* b): M(M), N(N), feas
 	this->Gamma = new int* [2];
 	for (int i = 0; i < 2; i++)
 		Gamma[i] = new int[M+N];
-	for (int i = 0; i < M; i++)
-	{
+	for (int i = 0; i < M; i++) {
 		Gamma[0][i] = i;
 		Gamma[1][i] = indexMin(i);
 	}
-	for (int i = M; i < M + N; i++)
-	{
+	for (int i = M; i < M + N; i++)  {
 		Gamma[0][i] = -1;
 		Gamma[1][i] = i - M;
 	}
@@ -55,20 +50,16 @@ TP::TP(unsigned int M, unsigned int N, int* c, int* a, int* b): M(M), N(N), feas
 	for (int i = 0; i < M + N; i++)
 		D[i] = new int[M + N];
 
-	for (int i = 0; i < M; i++)
-	{
-		for (int j = 0; j < M + N; j++)
-		{
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < M + N; j++) {
 			if (i == j)
 				D[i][j] = 1;
 			else
 				D[i][j] = 0;
 		}
 	}
-	for (int i = M; i < M+N; i++)
-	{
-		for (int j = 0; j < M + N; j++)
-		{
+	for (int i = M; i < M+N; i++) {
+		for (int j = 0; j < M + N; j++) {
 			if (i == j)
 				D[i][j] = -1;
 			else
@@ -76,16 +67,13 @@ TP::TP(unsigned int M, unsigned int N, int* c, int* a, int* b): M(M), N(N), feas
 		}
 	}
 	for (int i = 0; i < M; i++)
-	{
 		D[i][Gamma[1][i] + M] = -1;
-	}
 	calcObjective();
 }
 
 TP::~TP()
 {
-	for (int i = 0; i < M; i++)
-	{
+	for (int i = 0; i < M; i++) {
 		delete[] this->C[i];
 		delete[] this->X[i];
 	}
@@ -126,16 +114,11 @@ int TP::indexMin(int row)
 void TP::calcObjective()
 {
 	int sum = 0;
-	for (int i = 0 ; i < M + N; i++)
-	{
+	for (int i = 0 ; i < M + N; i++) {
 		if (i < M)
-		{
 			sum += A[i] * u[i];
-		}
 		else
-		{
 			sum += A[i] * v[i-M];
-		}
 	}
 	psi = sum;
 }
@@ -176,6 +159,7 @@ void TP::solve()
 			P[i] = D[i][k];
 		for (int j = 0; j < N; j++)
 			Q[j] = D[j + M][k];
+
 		//2.2
 		count = 0;
 		for (int i = 0; i < M; i++)
@@ -195,9 +179,8 @@ void TP::solve()
 				}
 			}
 		}
-		if (count == 0)
-		{
-			// no feasible solution
+		if (count == 0) // no feasible solution
+		{	
             feasible = false;
             break;
 		}
@@ -207,6 +190,7 @@ void TP::solve()
 		{
 			D[l][k] = -D[l][k];
 		}
+
 		//3.1.2
 		for (int r = 0; r < M + N; r++)
 		{
@@ -238,9 +222,4 @@ void TP::solve()
     }
 
 	delete[] P, Q, Y;
-}
-
-int TP::operator()(unsigned int i, unsigned int j)
-{
-    return X[i][j];
 }

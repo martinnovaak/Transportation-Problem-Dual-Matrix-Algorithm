@@ -24,7 +24,7 @@ public:
     TP(unsigned int M, unsigned int N,int* c, int* a, int* b);
 	~TP();
 	void solve();
-    int operator()(unsigned int, unsigned int);
+	int operator()(unsigned int i, unsigned int j) { return X[i][j]; };
     int getRows(){return M;};
     int getColumns(){return N;};
     int getRes(){return psi;};
